@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getApiBase } from '../api';
 
 export default function Teams() {
+  const codespaceEndpointTemplate = 'https://$REACT_APP_CODESPACE_NAME-8000.app.github.dev/api/teams/';
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,6 +13,7 @@ export default function Teams() {
     const base = getApiBase();
     const endpoint = `${base}/teams/`;
     console.log('Fetching Teams from', endpoint);
+    console.log('Teams Codespace endpoint template:', codespaceEndpointTemplate);
     fetch(endpoint)
       .then(async (res) => {
         const ct = res.headers.get('content-type') || '';
