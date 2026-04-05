@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
-function getApiBase() {
-  const cs = process.env.REACT_APP_CODESPACE_NAME;
-  if (cs) return `https://${cs}-8000.app.github.dev/api`;
-  const origin = window.location.origin || '';
-  return origin.replace(/:3000$/, ':8000') + '/api';
-}
+import { getApiBase } from '../api';
 
 export default function Users() {
   const [items, setItems] = useState([]);
