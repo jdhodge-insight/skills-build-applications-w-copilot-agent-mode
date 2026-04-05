@@ -16,17 +16,34 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+import os
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
+
 @api_view(['GET'])
 def api_root(request, format=None):
+    """Return API root links using the Codespace URL when available.
+
+    This builds URLs using the environment variable `CODESPACE_NAME` so
+    the returned links use the Codespace hostname (https://$CODESPACE_NAME-8000.app.github.dev)
+    which avoids certificate issues when accessing the API through the Codespace URL.
+    """
+    codespace = os.environ.get('CODESPACE_NAME')
+    if codespace:
+        base = f"https://{codespace}-8000.app.github.dev/api"
+    else:
+        # Fallback to request-derived base
+        scheme = request.scheme
+        host = request.get_host()
+        base = f"{scheme}://{host}/api"
+
     return Response({
-        'users': request.build_absolute_uri('api/users/'),
-        'teams': request.build_absolute_uri('api/teams/'),
-        'activities': request.build_absolute_uri('api/activities/'),
-        'workouts': request.build_absolute_uri('api/workouts/'),
-        'leaderboard': request.build_absolute_uri('api/leaderboard/'),
+        'users': f"{base}/users/",
+        'teams': f"{base}/teams/",
+        'activities': f"{base}/activities/",
+        'workouts': f"{base}/workouts/",
+        'leaderboard': f"{base}/leaderboard/",
     })
 
 urlpatterns = [
